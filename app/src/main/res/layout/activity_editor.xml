@@ -20,7 +20,7 @@
 
         <ImageView
             android:id="@+id/logoLoginPage"
-            android:layout_width="89dp"
+            android:layout_width="90dp"
             android:layout_height="70dp"
             android:layout_gravity="right"
             android:src="@drawable/logo_with_black" />
@@ -38,9 +38,9 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="400dp"
-        android:layout_height="500dp"
-        android:background="#BBBABA"
-        android:scaleType="centerCrop" />
+        android:layout_height="400dp"
+        android:background="#FFFFFF"
+        android:scaleType="fitCenter" />
 
 
 </LinearLayout>

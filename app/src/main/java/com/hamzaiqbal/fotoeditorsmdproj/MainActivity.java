@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,42 +23,53 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {    private static final int REQUEST_IMAGE_CAPTURE = 1;
+public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int PERMISSIONS_REQUEST_CAMERA = 100;
+    private static final int PERMISSIONS_REQUEST_READ_STORAGE = 101;
     private Uri imageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Button captureButton = findViewById(R.id.uploadPhoto);
         Button galleryButton = findViewById(R.id.uploadgallery);
-
         captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.CAMERA},
-                            PERMISSIONS_REQUEST_CAMERA);
-                } else {
-                    try {
-                        takePicture();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        });
+                                             @Override
+                                             public void onClick(View v) {
+                                                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                                                         != PackageManager.PERMISSION_GRANTED) {
+                                                     ActivityCompat.requestPermissions(MainActivity.this,
+                                                             new String[]{Manifest.permission.CAMERA},
+                                                             PERMISSIONS_REQUEST_CAMERA);
+                                                 } else {
+                                                     try {
+                                                         takePicture();
+                                                     } catch (IOException e) {
+                                                         throw new RuntimeException(e);
+                                                     }
+                                                 }
+                                             }
+                                         }
+        );
 
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_READ_STORAGE);
+                } else {
+                    selectPicture();
+                }
             }
         });
+
     }
 
     private void takePicture() throws IOException {
@@ -91,12 +103,10 @@ public class MainActivity extends AppCompatActivity {    private static final in
                     throw new RuntimeException(e);
                 }
             } else {
-                // Explain to the user that the feature is unavailable because
-                // the features requires a permission that the user has denied.
-                // At the same time, respect the user's decision.
             }
         }
     }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
