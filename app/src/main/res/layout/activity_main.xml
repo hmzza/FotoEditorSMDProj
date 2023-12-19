@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="none"
+    tools:context=".MainActivity"
+    android:layout_margin="15dp"
+    tools:visibility="visible"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Upload Image"
+            android:textSize="25dp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+
+            />
+
+        <ImageView
+            android:id="@+id/logoLoginPage"
+            android:layout_width="89dp"
+            android:layout_height="70dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="100dp"
+            android:src="@drawable/logo_with_black" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#C6C6C6"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/uploadPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_design"
+        android:hint="Capture Image"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#343333"
+        android:textSize="30dp"
+        android:textStyle="normal" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/uploadgallery"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_design2"
+        android:hint="Import from Gallery"
+        android:textSize="30dp"
+        android:textStyle="normal" />
+
+
+</LinearLayout>
