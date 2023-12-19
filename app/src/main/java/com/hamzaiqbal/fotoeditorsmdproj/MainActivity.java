@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {    private static final in
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPicture();
             }
         });
     }
