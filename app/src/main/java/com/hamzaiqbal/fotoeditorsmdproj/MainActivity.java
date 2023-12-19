@@ -1,11 +1,9 @@
 package com.hamzaiqbal.fotoeditorsmdproj;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -38,22 +36,22 @@ public class MainActivity extends AppCompatActivity {
         Button captureButton = findViewById(R.id.uploadPhoto);
         Button galleryButton = findViewById(R.id.uploadgallery);
         captureButton.setOnClickListener(new View.OnClickListener() {
-                                             @Override
-                                             public void onClick(View v) {
-                                                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
-                                                         != PackageManager.PERMISSION_GRANTED) {
-                                                     ActivityCompat.requestPermissions(MainActivity.this,
-                                                             new String[]{Manifest.permission.CAMERA},
-                                                             PERMISSIONS_REQUEST_CAMERA);
-                                                 } else {
-                                                     try {
-                                                         takePicture();
-                                                     } catch (IOException e) {
-                                                         throw new RuntimeException(e);
-                                                     }
-                                                 }
-                                             }
-                                         }
+             @Override
+             public void onClick(View v) {
+                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                         != PackageManager.PERMISSION_GRANTED) {
+                     ActivityCompat.requestPermissions(MainActivity.this,
+                             new String[]{Manifest.permission.CAMERA},
+                             PERMISSIONS_REQUEST_CAMERA);
+                 } else {
+                     try {
+                         takePicture();
+                     } catch (IOException e) {
+                         throw new RuntimeException(e);
+                     }
+                 }
+             }
+         }
         );
 
         galleryButton.setOnClickListener(new View.OnClickListener() {

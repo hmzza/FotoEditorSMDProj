@@ -3,6 +3,8 @@ plugins {
 }
 
 android {
+
+
     namespace = "com.hamzaiqbal.fotoeditorsmdproj"
     compileSdk = 34
 
@@ -31,8 +33,9 @@ android {
     }
 }
 
+
 dependencies {
-    implementation("com.theartofdev.edmodo:android-image-cropper:2.8.+")
+    implementation ("com.github.yalantis:ucrop:2.2.8")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
