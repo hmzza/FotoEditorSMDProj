@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
     android:background="@color/white"
     android:orientation="vertical"
     android:scrollbars="none"
@@ -28,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="FotoEditor"
             android:textSize="25dp"
             android:textStyle="bold" />
@@ -36,11 +35,23 @@
     </LinearLayout>
 
     <ImageView
+        android:layout_margin="15dp"
         android:id="@+id/imageView"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:background="#FFFFFF"
+        android:layout_width="380dp"
+        android:layout_height="500dp"
+        android:background="#E6E6E6"
         android:scaleType="fitCenter" />
+    <Button
+        android:id="@+id/button_rotate_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rotate Left"/>
+
+    <Button
+        android:id="@+id/button_rotate_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rotate Right"/>
 
 
 </LinearLayout>
