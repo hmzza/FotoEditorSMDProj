@@ -39,7 +39,7 @@
         android:layout_height="0dp"
         android:layout_margin="15dp"
         android:layout_weight="1"
-        android:background="#FAB400"
+        android:background="#FFFDF9"
         android:scaleType="fitCenter" />
 
     <!-- Action icons for edit options -->
@@ -112,6 +112,26 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="RIGHT" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_add_text"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/add_text"
+                android:src="@drawable/addtexticon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="TEXT" />
         </LinearLayout>
 
 

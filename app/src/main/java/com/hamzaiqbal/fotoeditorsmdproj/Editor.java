@@ -1,14 +1,21 @@
 package com.hamzaiqbal.fotoeditorsmdproj;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.yalantis.ucrop.UCrop;
@@ -31,6 +38,7 @@ public class Editor extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         ImageView button_crop = findViewById(R.id.button_crop);
         ImageView button_rotate_left = findViewById(R.id.button_rotate_left);
+        ImageView button_add_text = findViewById(R.id.button_add_text);
         ImageView button_rotate_right = findViewById(R.id.button_rotate_right);
 
         Intent intent = getIntent();
@@ -67,6 +75,47 @@ public class Editor extends AppCompatActivity {
                 }
             }
         });
+
+        button_add_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTextDialog();
+            }
+        });
+    }
+
+    private void showAddTextDialog() {
+        final EditText input = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setTitle("Add Text")
+                .setView(input)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String text = input.getText().toString();
+                        drawTextOnBitmap(text);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    private void drawTextOnBitmap(String text) {
+        if (currentBitmap != null) {
+            Bitmap newBitmap = Bitmap.createBitmap(currentBitmap.getWidth(), currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(newBitmap);
+            canvas.drawBitmap(currentBitmap, 0, 0, null);
+
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE); // Text color
+            paint.setTextSize(50); // Text size
+            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            paint.setAntiAlias(true);
+
+            // TODO: Allow the user to choose the position of the text or implement a dragging feature
+            canvas.drawText(text, 100, 100, paint); // You need to choose the x, y positions
+
+            imageView.setImageBitmap(newBitmap);
+            currentBitmap = newBitmap; // Update the current bitmap
+        }
     }
 
     private void rotateImage(int degrees) {
