@@ -7,14 +7,14 @@
     android:orientation="vertical"
     android:scrollbars="none"
     tools:context=".MainActivity"
-    android:layout_margin="15dp"
+
     tools:visibility="visible"
     android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:orientation="horizontal">
 
 
@@ -45,6 +45,7 @@
         />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:layout_margin="15dp"
         android:id="@+id/uploadPhoto"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -58,6 +59,7 @@
         android:textStyle="normal" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:layout_margin="15dp"
         android:id="@+id/uploadgallery"
         android:layout_width="match_parent"
         android:layout_height="150dp"

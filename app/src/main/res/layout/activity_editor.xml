@@ -4,43 +4,117 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
     android:background="@color/white"
     android:orientation="vertical"
     android:scrollbars="none"
-    tools:context=".MainActivity"
+    tools:context=".Editor"
     tools:visibility="visible">
 
+    <!-- Header with logo and title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_margin="10dp"
         android:orientation="horizontal">
 
-
         <ImageView
             android:id="@+id/logoLoginPage"
-            android:layout_width="89dp"
+            android:layout_width="90dp"
             android:layout_height="70dp"
-            android:layout_gravity="right"
             android:src="@drawable/logo_with_black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="FotoEditor"
             android:textSize="25dp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
+    <!-- Image display area -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="400dp"
-        android:layout_height="500dp"
-        android:background="#BBBABA"
-        android:scaleType="centerCrop" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:background="#FAB400"
+        android:scaleType="fitCenter" />
+
+    <!-- Action icons for edit options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="50dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_crop"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/crop"
+                android:src="@drawable/cropicon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="CROP" />
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_rotate_left"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/rotate_left"
+                android:src="@drawable/rotatelefticon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="LEFT" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_rotate_right"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/rotate_right"
+                android:src="@drawable/rotaterighticon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="RIGHT" />
+        </LinearLayout>
+
+
+        <!-- Add more icons for other features as needed -->
+    </LinearLayout>
 </LinearLayout>

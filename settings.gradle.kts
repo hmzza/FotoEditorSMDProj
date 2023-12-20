@@ -10,6 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter() // Note: jcenter() is at end of life, consider removing it if all dependencies are available elsewhere
+        maven(url = "https://jitpack.io")
     }
 }
 
