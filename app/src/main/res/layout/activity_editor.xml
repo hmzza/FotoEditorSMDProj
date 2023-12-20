@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,10 +12,12 @@
 
     <!-- Header with logo and title -->
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_margin="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <ImageView
             android:id="@+id/logoLoginPage"
@@ -27,33 +29,57 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="FotoEditor"
+            android:text="Edit Photo"
             android:textSize="25dp"
             android:textStyle="bold" />
+
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="110dp"
+            android:src="@drawable/downlioad" />
+
+
     </LinearLayout>
 
     <!-- Image display area -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="15dp"
+        android:layout_height="500dp"
+        android:layout_below="@+id/header"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
         android:layout_weight="1"
         android:background="#FAB400"
         android:scaleType="fitCenter" />
-
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true" />
     <!-- Action icons for edit options -->
+    <HorizontalScrollView
+        android:id="@+id/edit_icons"
+        android:layout_below="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="50dp">
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="30dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -68,16 +94,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="CROP" />
+                android:text="CROP"
+                android:textStyle="bold"/>
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="30dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/button_state_background"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/button_rotate_left"
@@ -90,15 +120,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="LEFT" />
+                android:text="LEFT"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="30dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/button_state_background"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/button_rotate_right"
@@ -111,10 +145,115 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="RIGHT" />
+                android:text="RIGHT"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+<!--        Filters icon-->
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_filter"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/rotate_right"
+                android:src="@drawable/filter" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="FILTERS"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+<!--        emoji icon-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_emoji"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/rotate_right"
+                android:src="@drawable/emoji" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="EMOJI"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+<!--        undo icon-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_undo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/undo"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="UNDO"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+
+<!--        redo icon-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_redo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/redo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="REDO"
+                android:textStyle="bold"/>
         </LinearLayout>
 
 
         <!-- Add more icons for other features as needed -->
     </LinearLayout>
-</LinearLayout>
+    </HorizontalScrollView>
+    <!-- Tick button to apply the filter -->
+    <ImageView
+    android:id="@+id/button_apply_filter"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:src="@drawable/done"
+    android:visibility="gone"
+    android:layout_gravity="center"
+    android:padding="10dp"
+    />
+</RelativeLayout>
