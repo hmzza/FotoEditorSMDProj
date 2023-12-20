@@ -39,7 +39,7 @@
         android:layout_height="0dp"
         android:layout_margin="15dp"
         android:layout_weight="1"
-        android:background="#E6E6E6"
+        android:background="#FAB400"
         android:scaleType="fitCenter" />
 
     <!-- Action icons for edit options -->
