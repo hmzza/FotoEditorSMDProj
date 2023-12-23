@@ -21,6 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+
+
+
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button captureButton = findViewById(R.id.uploadPhoto);
         Button galleryButton = findViewById(R.id.uploadgallery);
+
         captureButton.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
