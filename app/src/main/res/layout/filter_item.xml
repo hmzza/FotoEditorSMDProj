@@ -1,0 +1,21 @@
+<!-- Layout for a single filter item in the list -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_marginTop="-20dp">
+
+    <ImageView
+        android:id="@+id/filterImage"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_background" /> <!-- Replace with your filter preview drawable -->
+
+    <TextView
+        android:id="@+id/filterName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Filtername" /> <!-- Replace with your filter name -->
+</LinearLayout>
