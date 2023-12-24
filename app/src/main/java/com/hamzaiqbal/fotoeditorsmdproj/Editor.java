@@ -7,11 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,20 +34,34 @@ import java.io.IOException;
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 
+
 public class Editor extends AppCompatActivity implements FiltersFragment.FiltersFragmentListener {
     private FiltersFragment filtersFragment;
     private ImageView imageView, buttonApplyFilter;
     private ImageView emoji;
+    private TextView btnSaveChanges; // Add this variable
+    private static final int UCROP_REQUEST_CODE = 3;
+    private FrameLayout filtersContainer;
+    private GPUImageFilter selectedFilter;
+    private String selectedEmoji;
+
+    // Doodle related variables
+    private ImageView btnDoodle;
+    // Doodle related variables
+    // Doodle related variables
+    private boolean isDoodling = false;
+    private float startX, startY;
+    private static final float TOUCH_TOLERANCE = 4;
+    private Paint doodlePaint;
+    private Path doodlePath;
+    private Bitmap doodleBitmap;
 
 
 
 
     private HorizontalScrollView horizontalScrollView;
     private Bitmap currentBitmap; // To hold the current bitmap
-    private static final int UCROP_REQUEST_CODE = 3;
-    private FrameLayout filtersContainer;
-    private GPUImageFilter selectedFilter;
-    private String selectedEmoji;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +149,118 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
 
 
 
+        btnDoodle = findViewById(R.id.btn_doodle);
+
+        doodlePaint = new Paint();
+        doodlePaint.setAntiAlias(true);
+        doodlePaint.setDither(true);
+        doodlePaint.setColor(Color.BLACK);
+        doodlePaint.setStyle(Paint.Style.STROKE);
+        doodlePaint.setStrokeJoin(Paint.Join.ROUND);
+        doodlePaint.setStrokeCap(Paint.Cap.ROUND);
+        doodlePaint.setStrokeWidth(20);
+
+        btnDoodle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Toggle doodle mode
+                isDoodling = !isDoodling;
+                if (isDoodling) {
+                    startDoodling();
+                }
+            }
+        });
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isDoodling) {
+                    float x = event.getX();
+                    float y = event.getY();
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startDoodlePath(x, y);
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            doDoodlePath(x, y);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            endDoodlePath();
+                            break;
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        btnSaveChanges = findViewById(R.id.btn_save_changes); // Initialize the Save button
+        btnSaveChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveChanges(); // Call the method to save changes
+            }
+        });
     }
+
+    private void saveChanges() {
+        // Check if an emoji or doodle is applied to the image
+        if (selectedEmoji != null) {
+            applyEmojiToImage(selectedEmoji); // Apply the selected emoji
+        }
+        if (isDoodling) {
+            // Save the doodle on the image
+            // For example:
+            drawDoodlePath();
+        }
+
+        // Once the changes are applied, hide the doodle mode and selected emoji
+        isDoodling = false;
+        selectedEmoji = null;
+    }
+
+    private void startDoodling() {
+        imageView.setDrawingCacheEnabled(true);
+        doodleBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap().copy(Bitmap.Config.ARGB_8888, true);
+        imageView.setImageBitmap(doodleBitmap);
+    }
+
+    private void startDoodlePath(float x, float y) {
+        doodlePath = new Path();
+        doodlePath.moveTo(x, y);
+        startX = x;
+        startY = y;
+    }
+
+    private void doDoodlePath(float x, float y) {
+        float dx = Math.abs(x - startX);
+        float dy = Math.abs(y - startY);
+        if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+            doodlePath.quadTo(startX, startY, (x + startX) / 2, (y + startY) / 2);
+            startX = x;
+            startY = y;
+            drawDoodlePath();
+        }
+    }
+
+    private void endDoodlePath() {
+        doodlePath.lineTo(startX, startY);
+        drawDoodlePath();
+        doodlePath.reset();
+    }
+
+    private void drawDoodlePath() {
+        Canvas canvas = new Canvas(doodleBitmap);
+        canvas.drawPath(doodlePath, doodlePaint);
+        imageView.setImageBitmap(doodleBitmap);
+    }
+
+
+
+
+
+
 
 
 
