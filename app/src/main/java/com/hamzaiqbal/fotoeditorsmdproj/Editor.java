@@ -27,8 +27,13 @@ import java.io.IOException;
 public class Editor extends AppCompatActivity {
 
     private ImageView imageView;
-    private Bitmap currentBitmap; // To hold the current bitmap
+    private Bitmap originalBitmap, currentBitmap;
+
+    private Paint currentPaint;
     private static final int UCROP_REQUEST_CODE = 3;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +55,11 @@ public class Editor extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace(); // Handle this properly in production code
             }
+
         }
+
+
+
 
         button_rotate_left.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +74,8 @@ public class Editor extends AppCompatActivity {
                 rotateImage(90); // Rotate right by 90 degrees
             }
         });
+
+
 
         button_crop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +93,9 @@ public class Editor extends AppCompatActivity {
                 showAddTextDialog();
             }
         });
+
+
+
     }
 
     private void showAddTextDialog() {
@@ -98,6 +112,7 @@ public class Editor extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
     private void drawTextOnBitmap(String text) {
         if (currentBitmap != null) {
             Bitmap newBitmap = Bitmap.createBitmap(currentBitmap.getWidth(), currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
