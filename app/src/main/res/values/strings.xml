@@ -3,4 +3,5 @@
     <string name="rotate_left">Rotate Left</string>
     <string name="rotate_right">Rotate Right\n</string>
     <string name="crop">Crop</string>
+    <string name="add_text">Add Text to image\n</string>
 </resources>
