@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -19,6 +21,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -48,12 +51,15 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
     private ImageView buttonDoneDoodle;
     private LinearLayout colorPalette;
     private FiltersFragment filtersFragment;
-    private ImageView imageView, buttonApplyFilter;
+    private ImageView imageView, buttonApplyFilter, buttonAddText;
     private HorizontalScrollView horizontalScrollView;
     private Bitmap currentBitmap; // To hold the current bitmap
     private static final int UCROP_REQUEST_CODE = 3;
     private FrameLayout filtersContainer;
     private GPUImageFilter selectedFilter;
+    private int selectedColor = Color.BLACK; // Default color
+
+    private Bitmap originalBitmapBeforeText; //for maintaining the image before the text has been added
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,6 +228,19 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         });
 
         /////////////////////////////////////////////
+        //        CODE FOR ADD TEXT
+        /////////////////////////////////////////////
+        /////////////////////////////////////////////
+
+        ImageView buttonAddText = findViewById(R.id.button_add_text);
+        buttonAddText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTextMenu();
+            }
+        });
+
+        /////////////////////////////////////////////
         //        CODE FOR DOWNLOAD
         /////////////////////////////////////////////
         /////////////////////////////////////////////
@@ -284,11 +303,6 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
             currentBitmap = rotatedBitmap; // Update the current bitmap to the rotated one
         }
     }
-
-
-//    private void startCrop(Uri sourceUri) {
-//        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "SampleCropImage.jpeg"));
-//        UCrop uCrop = UCrop.of(sourceUri, destinationUri);
 
     private void startCrop(Bitmap bitmap) {
         // Resize the bitmap before cropping so that it does not take long to load
@@ -407,6 +421,87 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
 
         // Apply the layout parameters to DoodleView
         doodleView.setLayoutParams(doodleParams);
+    }
+    /////////////////////////////////////////////
+    //         CODE FOR ADDING TEXT
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
+        private void showTextMenu() {
+            // Save the current state before adding text
+            originalBitmapBeforeText = currentBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+            // Hide the main menu
+            horizontalScrollView.setVisibility(View.GONE);
+
+            // Show the text input layout
+            final View textMenu = findViewById(R.id.text_menu_layout); // Add this layout in your editor_activity.xml
+            textMenu.setVisibility(View.VISIBLE);
+
+            final EditText editText = textMenu.findViewById(R.id.edit_text);
+
+            // Add listeners for color buttons and apply text
+            View colorBlack = textMenu.findViewById(R.id.color_black1);
+            colorBlack.setOnClickListener(v -> {
+                selectedColor = Color.BLACK;
+                applyTextToImage(editText.getText().toString(), selectedColor);
+            });
+
+            View colorRed = textMenu.findViewById(R.id.color_red1);
+            colorRed.setOnClickListener(v -> {
+                selectedColor = Color.RED;
+                applyTextToImage(editText.getText().toString(), selectedColor);
+            });
+            View colorBlue = textMenu.findViewById(R.id.color_blue1);
+            colorBlue.setOnClickListener(v -> {
+                selectedColor = Color.BLUE;
+                applyTextToImage(editText.getText().toString(), selectedColor);
+            });
+            View colorYellow = textMenu.findViewById(R.id.color_yellow1);
+            colorYellow.setOnClickListener(v -> {
+                selectedColor = Color.YELLOW;
+                applyTextToImage(editText.getText().toString(), selectedColor);
+            });
+            View colorGreen = textMenu.findViewById(R.id.color_green1);
+            colorGreen.setOnClickListener(v -> {
+                selectedColor = Color.GREEN;
+                applyTextToImage(editText.getText().toString(), selectedColor);
+            });
+
+            ImageView buttonApplyText = textMenu.findViewById(R.id.button_apply_text);
+            buttonApplyText.setOnClickListener(v -> {
+                applyTextToImage(editText.getText().toString(), selectedColor);
+                textMenu.setVisibility(View.GONE);
+                horizontalScrollView.setVisibility(View.VISIBLE);
+            });
+
+
+            ImageView buttonDiscardText = textMenu.findViewById(R.id.button_discard_text);
+            buttonDiscardText.setOnClickListener(v -> {
+                // Revert to the original bitmap
+                imageView.setImageBitmap(originalBitmapBeforeText);
+                currentBitmap = originalBitmapBeforeText;
+
+                // Hide the text menu and show the main menu
+                textMenu.setVisibility(View.GONE);
+                horizontalScrollView.setVisibility(View.VISIBLE);
+            });
+
+        }
+
+    private void applyTextToImage(String text, int color) {
+        Bitmap mutableBitmap = currentBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(mutableBitmap);
+
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setTextSize(300);
+        paint.setAntiAlias(true);
+        //fixed position for text
+        canvas.drawText(text, 200, 500, paint);
+
+        imageView.setImageBitmap(mutableBitmap);
+        currentBitmap = mutableBitmap;
     }
 
     //Resizing bitmap because it is taking alot of time to open crop
