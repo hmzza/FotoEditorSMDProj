@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,8 +10,10 @@
     tools:context=".Editor"
     tools:visibility="visible">
 
+
     <!-- Header with logo and title -->
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_margin="10dp"
@@ -27,94 +29,356 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="FotoEditor"
+            android:text="Edit Photo"
+            android:textSize="25dp"
+
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_save_changes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="20dp"
+            android:text="save"
             android:textSize="25dp"
             android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/downlaod"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/downlioad" />
+
+
     </LinearLayout>
+
 
     <!-- Image display area -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="15dp"
+        android:layout_height="500dp"
+        android:layout_below="@+id/header"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
         android:layout_weight="1"
-        android:background="#FAB400"
+        android:background="#FFFDF9"
         android:scaleType="fitCenter" />
 
-    <!-- Action icons for edit options -->
-    <LinearLayout
+    <com.hamzaiqbal.fotoeditorsmdproj.DoodleView
+        android:id="@+id/doodle_view"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_alignLeft="@id/imageView"
+        android:layout_alignTop="@id/imageView"
+        android:layout_alignRight="@id/imageView"
+        android:layout_alignBottom="@id/imageView"
+        android:visibility="gone"
+        tools:ignore="MissingClass" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"></FrameLayout>
+
+    <!-- Action icons for edit options -->
+    <HorizontalScrollView
+        android:id="@+id/edit_icons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_crop"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/crop"
+                    android:src="@drawable/cropicon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="CROP"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/button_state_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_rotate_left"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/rotate_left"
+                    android:src="@drawable/rotatelefticon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="LEFT"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/button_state_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_rotate_right"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/rotate_right"
+                    android:src="@drawable/rotaterighticon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="RIGHT"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!--        Filters icon-->
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_filter"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/rotate_right"
+                    android:src="@drawable/filter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="FILTERS"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!--        emoji icon-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/bt_emoji"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/rotate_right"
+                    android:src="@drawable/emoji" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="EMOJI"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <!--        doodle icon-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/btn_doodle"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/doodle" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Doodle"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <!--        undo icon-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_undo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/undo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="UNDO"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <!--        redo icon-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_redo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/redo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="REDO"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/button_add_text"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/add_text"
+                    android:src="@drawable/addtexticon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="TEXT" />
+            </LinearLayout>
+
+
+            <!-- Add more icons for other features as needed -->
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/color_palette"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_icons"
         android:orientation="horizontal"
-        android:padding="50dp">
+        android:padding="10dp"
+        android:visibility="gone">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:orientation="vertical">
+        <!-- Define individual color options as Views -->
+        <View
+            android:id="@+id/color_black"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/black" />
 
-            <ImageView
-                android:id="@+id/button_crop"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="@string/crop"
-                android:src="@drawable/cropicon" />
+        <View
+            android:id="@+id/color_red"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimary" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="CROP" />
-        </LinearLayout>
+        <View
+            android:id="@+id/color_yellow"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:background="#FFEB3B" />
 
+        <View
+            android:id="@+id/color_blue"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:background="#034AFF" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:orientation="vertical">
+        <View
+            android:id="@+id/color_green"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:background="#00FF04" />
 
-            <ImageView
-                android:id="@+id/button_rotate_left"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="@string/rotate_left"
-                android:src="@drawable/rotatelefticon" />
+        <!-- Repeat for other colors -->
+        <!-- Define as many colors as you like -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="LEFT" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/button_rotate_right"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="@string/rotate_right"
-                android:src="@drawable/rotaterighticon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="RIGHT" />
-        </LinearLayout>
-
-
-        <!-- Add more icons for other features as needed -->
     </LinearLayout>
-</LinearLayout>
+    <!-- Tick button to apply the filter -->
+    <ImageView
+        android:id="@+id/button_apply_filter"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:src="@drawable/done"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/button_done_doodle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:src="@drawable/done"
+        android:visibility="gone" />
+</RelativeLayout>
