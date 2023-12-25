@@ -1,17 +1,23 @@
 package com.hamzaiqbal.fotoeditorsmdproj;
 
-import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
+<<<<<<<<< Temporary merge branch 1
+import android.content.DialogInterface;
+=========
+import android.app.Dialog;
+>>>>>>>>> Temporary merge branch 2
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+<<<<<<<<< Temporary merge branch 1
+import android.graphics.Typeface;
+=========
+import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaScannerConnection;
+>>>>>>>>> Temporary merge branch 2
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +25,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+<<<<<<<<< Temporary merge branch 1
+import android.widget.EditText;
+=========
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -26,7 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -107,10 +118,48 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
             }
         });
 
-        /////////////////////////////////////////////
-        //            CODE FOR FILTERS
-        /////////////////////////////////////////////
-        /////////////////////////////////////////////
+<<<<<<<<< Temporary merge branch 1
+        button_add_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTextDialog();
+            }
+        });
+    }
+
+    private void showAddTextDialog() {
+        final EditText input = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setTitle("Add Text")
+                .setView(input)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String text = input.getText().toString();
+                        drawTextOnBitmap(text);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    private void drawTextOnBitmap(String text) {
+        if (currentBitmap != null) {
+            Bitmap newBitmap = Bitmap.createBitmap(currentBitmap.getWidth(), currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(newBitmap);
+            canvas.drawBitmap(currentBitmap, 0, 0, null);
+
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE); // Text color
+            paint.setTextSize(50); // Text size
+            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            paint.setAntiAlias(true);
+
+            // TODO: Allow the user to choose the position of the text or implement a dragging feature
+            canvas.drawText(text, 100, 100, paint); // You need to choose the x, y positions
+
+            imageView.setImageBitmap(newBitmap);
+            currentBitmap = newBitmap; // Update the current bitmap
+        }
+=========
         // Set the click listener for the filter button
         button_filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,21 +277,22 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    // Android 10 and above uses scoped storage and no need for WRITE_EXTERNAL_STORAGE permission
-                    saveImageToGallery(currentBitmap);
-                } else {
-                    // For older versions, check if the WRITE_EXTERNAL_STORAGE permission is granted
-                    if (ContextCompat.checkSelfPermission(Editor.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        // If not, request the permission
-                        ActivityCompat.requestPermissions(Editor.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_STORAGE);
-                    } else {
-                        // Permission has already been granted, save the image
-                        saveImageToGallery(currentBitmap);
-                    }
-                }
+                saveChanges(); // Call the method to save changes
             }
         });
+>>>>>>>>> Temporary merge branch 2
+    }
+
+    private void saveChanges() {
+        // Check if an emoji or doodle is applied to the image
+        if (selectedEmoji != null) {
+            applyEmojiToImage(selectedEmoji); // Apply the selected emoji
+        }
+        if (isDoodling) {
+            // Save the doodle on the image
+            // For example:
+            drawDoodlePath();
+        }
 
 
     }
