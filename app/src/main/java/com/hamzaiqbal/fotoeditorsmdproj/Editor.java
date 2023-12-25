@@ -35,6 +35,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,6 +56,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
@@ -675,7 +686,7 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
                     public void onSuccess(Uri uri) {
                         // This URI can be used to download the image and can be stored in MySQL database
                         String downloadUrl = uri.toString();
-//                        saveImageUrlToMySQLDatabase(downloadUrl, fileName);
+                        sendImageToServer(downloadUrl);
                     }
                 });
             }
@@ -687,6 +698,76 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
             }
         });
     }
+    /////////////////////////////////////////////
+    //         SENDING IMAGE TO XAMPP STORAGE
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
 
+
+    private void sendImageToServer(String imageUrl) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                "http://192.168.0.107:8080/smdproj/upload_image.php",
+                response -> {
+                    // Handle server response here
+                    Toast.makeText(Editor.this, "Response: " + response, Toast.LENGTH_LONG).show();
+                },
+                error -> {
+                    // Handle error here
+                    String errorMessage = "Error: ";
+                    if (error instanceof NetworkError) {
+                        errorMessage += "Network error!";
+                    } else if (error instanceof ServerError) {
+                        errorMessage += "Server error!";
+                    } else if (error instanceof AuthFailureError) {
+                        errorMessage += "Authentication failure!";
+                    } else if (error instanceof ParseError) {
+                        errorMessage += "Parse error!";
+                    } else if (error instanceof NoConnectionError) {
+                        errorMessage += "No connection!";
+                    } else if (error instanceof TimeoutError) {
+                        errorMessage += "Connection timeout!";
+                    } else {
+                        errorMessage += error.toString();
+                    }
+
+                    Toast.makeText(Editor.this, errorMessage, Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("imageUrl", imageUrl);
+                params.put("timestamp", String.valueOf(System.currentTimeMillis()));
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        Volley.newRequestQueue(this).add(stringRequest);
+    }
+
+//    private void sendImageToServer(String imageUrl) {
+//        //using VOLLEY
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+//                "http://192.168.0.107/smdproj/upload_image.php",
+//                response -> {
+//                    // Handle server response here
+//                    Toast.makeText(Editor.this, response, Toast.LENGTH_LONG).show();
+//                },
+//                error -> {
+//                    // Handle error here
+//                    Toast.makeText(Editor.this, error.toString(), Toast.LENGTH_LONG).show();
+//                }) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("imageUrl", imageUrl);
+//                params.put("timestamp", String.valueOf(System.currentTimeMillis()));
+//                return params;
+//            }
+//        };
+//
+//        // Add the request to the RequestQueue
+//        Volley.newRequestQueue(this).add(stringRequest);
+//    }
 
 }
