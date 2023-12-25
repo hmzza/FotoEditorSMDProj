@@ -291,7 +291,11 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
 //        UCrop uCrop = UCrop.of(sourceUri, destinationUri);
 
     private void startCrop(Bitmap bitmap) {
-        Uri sourceUri = getUriFromBitmap(bitmap);
+        // Resize the bitmap before cropping so that it does not take long to load
+        Bitmap resizedBitmap = getResizedBitmap(bitmap, 1080, 1920); // Adjust max width and height as needed
+        Uri sourceUri = getUriFromBitmap(resizedBitmap);
+
+//        Uri sourceUri = getUriFromBitmap(bitmap);
         if (sourceUri == null) {
             // Handle error, cannot continue without a URI
             return;
@@ -405,7 +409,20 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         doodleView.setLayoutParams(doodleParams);
     }
 
+    //Resizing bitmap because it is taking alot of time to open crop
+    private Bitmap getResizedBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        float scaleWidth = ((float) maxWidth) / bitmap.getWidth();
+        float scaleHeight = ((float) maxHeight) / bitmap.getHeight();
+        float scaleFactor = Math.min(scaleWidth, scaleHeight);
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleFactor, scaleFactor);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+    }
+
     //Code for saving current bitmap to file
+    //crop was not picking the current bitmap to this resolves the issue
     private Uri getUriFromBitmap(Bitmap bitmap) {
         // Assuming you have permission to write to external storage
         File file = new File(getExternalCacheDir(), "tempImage.png");
