@@ -1,11 +1,14 @@
 package com.hamzaiqbal.fotoeditorsmdproj;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,6 +17,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -699,12 +704,39 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         });
     }
     /////////////////////////////////////////////
+    //         DATASYNC
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkInternetConnection();
+    }
+
+    private void checkInternetConnection() {
+        if (!isNetworkAvailable()) {
+            showNoInternetConnectionDialog();
+            Toast.makeText(Editor.this, "No internet connection available", Toast.LENGTH_LONG).show();
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+        }
+        return false;
+    }
+
+
+    /////////////////////////////////////////////
     //         SENDING IMAGE TO XAMPP STORAGE
     /////////////////////////////////////////////
     /////////////////////////////////////////////
-
-
-    private void sendImageToServer(String imageUrl) {
+    private void performVolleyRequest(String imageUrl){
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 "http://192.168.0.107:8080/smdproj/upload_image.php",
                 response -> {
@@ -744,30 +776,54 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         // Add the request to the RequestQueue
         Volley.newRequestQueue(this).add(stringRequest);
     }
+    private void showNoInternetConnectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No Internet Connection")
+                .setMessage("Please check your connection and try again.")
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
-//    private void sendImageToServer(String imageUrl) {
-//        //using VOLLEY
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-//                "http://192.168.0.107/smdproj/upload_image.php",
-//                response -> {
-//                    // Handle server response here
-//                    Toast.makeText(Editor.this, response, Toast.LENGTH_LONG).show();
-//                },
-//                error -> {
-//                    // Handle error here
-//                    Toast.makeText(Editor.this, error.toString(), Toast.LENGTH_LONG).show();
-//                }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("imageUrl", imageUrl);
-//                params.put("timestamp", String.valueOf(System.currentTimeMillis()));
-//                return params;
-//            }
-//        };
-//
-//        // Add the request to the RequestQueue
-//        Volley.newRequestQueue(this).add(stringRequest);
-//    }
+    private void sendImageToServer(String imageUrl) {
+        if (isNetworkAvailable()) {
+            performVolleyRequest(imageUrl);
+        } else {
+            storeRequestForLater(imageUrl);
+            showNoInternetConnectionDialog();
+        }
+    }
+    private void storeRequestForLater(String imageUrl) {
+        SharedPreferences sharedPref = getSharedPreferences("com.example.myapp.PENDING_REQUESTS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("pending_image_url", imageUrl);
+        // If you have more data to store, consider using a unique key for each request
+        editor.apply();
+    }
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                if (isNetworkAvailable()) {
+                    resendStoredRequests(context);
+                }
+            }
+        }
+
+    }
+
+    private void resendStoredRequests(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("com.example.myapp.PENDING_REQUESTS", Context.MODE_PRIVATE);
+        String imageUrl = sharedPref.getString("pending_image_url", null);
+        if (imageUrl != null) {
+            performVolleyRequest(imageUrl);
+
+            // Once sent, clear from SharedPreferences
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove("pending_image_url");
+            editor.apply();
+        }
+    }
+
 
 }

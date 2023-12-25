@@ -67,6 +67,8 @@
                 android:resource="@xml/file_paths" />
         </provider> <!-- Declaration of the BroadcastReceiver -->
         <receiver android:name=".NotificationReceiver" />
+
+
     </application>
 
 </manifest>
