@@ -1,9 +1,15 @@
 package com.hamzaiqbal.fotoeditorsmdproj;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,6 +24,7 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -36,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();//FOR ALARMED NOTIFICATION
+        scheduleDailyNotification();
         Button captureButton = findViewById(R.id.uploadPhoto);
         Button galleryButton = findViewById(R.id.uploadgallery);
 
@@ -74,6 +83,50 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /////////////////////////////////////////////
+    //    CODE FOR SCHEDULED NOTIFICATIONS
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name2);
+            String description = getString(R.string.channel_description2);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id2), name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+    private void scheduleDailyNotification() {
+        // Define a time for the notification (e.g., 10:00 AM)
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 8); // Set the hour of the day (24-hour format)
+        calendar.set(Calendar.MINUTE, 35);       // Set the minute
+        calendar.set(Calendar.SECOND, 0);       // Set the second to zero
+
+        // Check if the time is past, add one day if it's past
+        if (Calendar.getInstance().after(calendar)) {
+            calendar.add(Calendar.DATE, 1);
+        }
+
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+    }
+
+
+    /////////////////////////////////////////////
+    //    CODE FOR uploading pic from camera
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
     private void takePicture() throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -88,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /////////////////////////////////////////////
+    //    CODE FOR uploading pic from gallery
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
     private void selectPicture() {
         Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

@@ -7,4 +7,8 @@
     <string name="channel_name">Image Save Notification</string>
     <string name="channel_description">Notifications for images saved to the gallery</string>
     <string name="channel_id">image_save_notification_channel</string>
+    <string name="channel_id2">daily_notification_channel</string>
+    <string name="channel_name2">Daily Notification</string>
+    <string name="channel_description2">Daily reminders to use the editor app</string>
+
 </resources>
