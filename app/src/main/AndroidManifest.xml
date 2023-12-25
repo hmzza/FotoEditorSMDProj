@@ -23,7 +23,13 @@
         android:theme="@style/Theme.FotoEditorSMDProj"
         tools:targetApi="31">
         <activity
-            android:name=".DialogAddTextActivity"
+            android:name=".ForgotPassword"
+            android:exported="false" />
+        <activity
+            android:name=".registrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".Splash"
