@@ -67,6 +67,7 @@
         android:layout_weight="1"
         android:background="#FFFDF9"
         android:scaleType="fitCenter" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -310,4 +311,13 @@
     android:layout_gravity="center"
     android:padding="10dp"
     />
+    <ImageView
+        android:id="@+id/button_apply_doodle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/done"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        />
 </RelativeLayout>
