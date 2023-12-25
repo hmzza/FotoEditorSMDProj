@@ -5,9 +5,11 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,23 +91,28 @@ public class MainActivity extends AppCompatActivity {
     /////////////////////////////////////////////
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name2);
-            String description = getString(R.string.channel_description2);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id2), name, importance);
-            channel.setDescription(description);
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id1), getString(R.string.channel_name1), NotificationManager.IMPORTANCE_DEFAULT);
+
+            Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.horror_screams);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+
+            channel.setSound(soundUri, audioAttributes);
+
+            // Create the channel
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+            notificationManager.createNotificationChannel(channel);
         }
+
     }
     private void scheduleDailyNotification() {
         // Define a time for the notification (e.g., 10:00 AM)
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 8); // Set the hour of the day (24-hour format)
-        calendar.set(Calendar.MINUTE, 35);       // Set the minute
-        calendar.set(Calendar.SECOND, 0);       // Set the second to zero
+        calendar.set(Calendar.HOUR_OF_DAY, 9); // Set the hour of the day (24-hour format)
+        calendar.set(Calendar.MINUTE, 12);       // Set the minute
+        calendar.set(Calendar.SECOND, 30);       // Set the second to zero
 
         // Check if the time is past, add one day if it's past
         if (Calendar.getInstance().after(calendar)) {
