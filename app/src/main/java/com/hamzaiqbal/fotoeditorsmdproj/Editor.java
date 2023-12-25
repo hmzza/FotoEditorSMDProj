@@ -1,5 +1,10 @@
 package com.hamzaiqbal.fotoeditorsmdproj;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,7 +19,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.Manifest;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.yalantis.ucrop.UCrop;
@@ -54,7 +59,7 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-
+        createNotificationChannel();
         imageView = findViewById(R.id.imageView);
         ImageView button_crop = findViewById(R.id.button_crop);
         ImageView button_rotate_left = findViewById(R.id.button_rotate_left);
@@ -370,11 +375,6 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         // Return the combined bitmap
         return combined;
     }
-
-    /////////////////////////////////////////////
-    //         CODE FOR SAVING IMAGE
-    /////////////////////////////////////////////
-    /////////////////////////////////////////////
     private void adjustDoodleViewSize() {
         // Get the layout parameters of the ImageView
         RelativeLayout.LayoutParams imageParams = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
@@ -391,6 +391,12 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         // Apply the layout parameters to DoodleView
         doodleView.setLayoutParams(doodleParams);
     }
+
+    /////////////////////////////////////////////
+    //         CODE FOR SAVING IMAGE
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
 
     private void saveImageToGallery(Bitmap finalBitmap) {
         // Get the external storage directory
@@ -427,6 +433,8 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
                                     Toast.makeText(Editor.this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
                                 }
                             });
+
+                            sendNotification(fileName, uri);
                         }
                     });
 
@@ -442,7 +450,10 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         }
     }
 
-
+    /////////////////////////////////////////////
+    //         CODE FOR REQUESTS
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -455,6 +466,42 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
                 Toast.makeText(this, "Permission denied to write to storage", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    /////////////////////////////////////////////
+    //         CODE FOR PUSH NOTIFICATION
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void sendNotification(String fileName, Uri fileUri) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(fileUri, "image/jpeg");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.channel_id))
+                .setSmallIcon(R.drawable.logo_with_black) // Replace with your own drawable icon
+                .setContentTitle("WOHOO!! Image Saved")
+                .setContentText("Tap to view the image.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        notificationManager.notify(1, builder.build());
     }
 
 

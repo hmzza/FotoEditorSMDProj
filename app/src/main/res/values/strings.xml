@@ -4,4 +4,7 @@
     <string name="rotate_right">Rotate Right\n</string>
     <string name="crop">Crop</string>
     <string name="add_text">Add Text to image\n</string>
+    <string name="channel_name">Image Save Notification</string>
+    <string name="channel_description">Notifications for images saved to the gallery</string>
+    <string name="channel_id">image_save_notification_channel</string>
 </resources>
