@@ -48,4 +48,6 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("jp.co.cyberagent.android:gpuimage:2.0.4")
+    implementation("com.google.firebase:firebase-storage")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 }

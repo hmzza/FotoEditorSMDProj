@@ -35,9 +35,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.AspectRatio;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,7 +64,7 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
     private FrameLayout filtersContainer;
     private GPUImageFilter selectedFilter;
     private int selectedColor = Color.BLACK; // Default color
-
+//    private StorageReference storageRef;
     private Bitmap originalBitmapBeforeText; //for maintaining the image before the text has been added
 
     @Override
@@ -568,11 +574,12 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(Editor.this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Editor.this, "Image Saved to Gallery", Toast.LENGTH_SHORT).show();
                                 }
                             });
 
                             sendNotification(fileName, uri);
+                            uploadImageToFirebaseStorage(currentBitmap, fileName);
                         }
                     });
 
@@ -632,7 +639,7 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.channel_id))
-                .setSmallIcon(R.drawable.logo_with_black) // Replace with your own drawable icon
+                .setSmallIcon(R.drawable.logo) // Replace with your own drawable icon
                 .setContentTitle("WOHOO!! Image Saved")
                 .setContentText("Tap to view the image.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -642,6 +649,44 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         notificationManager.notify(1, builder.build());
     }
 
+    /////////////////////////////////////////////
+    //         SAVING IMAGE TO FIREBASE STORAGE
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+    private void uploadImageToFirebaseStorage(Bitmap finalBitmap, String fileName) {
+        // Convert bitmap to byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        byte[] data = baos.toByteArray();
+
+        // Get reference to Firebase Storage
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storageRef.child("images/"+ fileName);
+
+        // Upload the image
+        UploadTask uploadTask = imageRef.putBytes(data);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Image uploaded successfully
+                // Get download URL and proceed with updating MySQL database
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // This URI can be used to download the image and can be stored in MySQL database
+                        String downloadUrl = uri.toString();
+//                        saveImageUrlToMySQLDatabase(downloadUrl, fileName);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle unsuccessful uploads
+                Toast.makeText(Editor.this, "Failed to upload image to Firebase", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
 }
