@@ -100,9 +100,12 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         button_crop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (intent.hasExtra("uri")) {
-                    Uri sourceUri = Uri.parse(intent.getStringExtra("uri"));
-                    startCrop(sourceUri);
+//                if (intent.hasExtra("uri")) {
+//                    Uri sourceUri = Uri.parse(intent.getStringExtra("uri"));
+//                    startCrop(sourceUri);
+//                }
+                if (currentBitmap != null) {
+                    startCrop(currentBitmap);
                 }
             }
         });
@@ -282,7 +285,17 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
         }
     }
 
-    private void startCrop(Uri sourceUri) {
+
+//    private void startCrop(Uri sourceUri) {
+//        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "SampleCropImage.jpeg"));
+//        UCrop uCrop = UCrop.of(sourceUri, destinationUri);
+
+    private void startCrop(Bitmap bitmap) {
+        Uri sourceUri = getUriFromBitmap(bitmap);
+        if (sourceUri == null) {
+            // Handle error, cannot continue without a URI
+            return;
+        }
         Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "SampleCropImage.jpeg"));
         UCrop uCrop = UCrop.of(sourceUri, destinationUri);
 
@@ -390,6 +403,19 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
 
         // Apply the layout parameters to DoodleView
         doodleView.setLayoutParams(doodleParams);
+    }
+
+    //Code for saving current bitmap to file
+    private Uri getUriFromBitmap(Bitmap bitmap) {
+        // Assuming you have permission to write to external storage
+        File file = new File(getExternalCacheDir(), "tempImage.png");
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            return Uri.fromFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /////////////////////////////////////////////

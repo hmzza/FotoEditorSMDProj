@@ -24,9 +24,6 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageRGBFilter;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSaturationFilter;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter;
 
-// ... Import other GPUImage filters as needed
-
-
 public class FiltersFragment extends Fragment {
     public interface FiltersFragmentListener {
         void onFilterSelected(GPUImageFilter filter);
@@ -58,7 +55,7 @@ public class FiltersFragment extends Fragment {
         filterItems.add(new FilterItem(new GPUImageSaturationFilter(), "Saturation", R.drawable.filter_saturation));
         filterItems.add(new FilterItem(new GPUImageHueFilter(), "Hue", R.drawable.filter_hue));
         filterItems.add(new FilterItem(new GPUImageBrightnessFilter(), "Brightness", R.drawable.filter_brightness));
-        filterItems.add(new FilterItem(new GPUImageMonochromeFilter(), "Monochrome", R.drawable.filter_mono));
+        filterItems.add(new FilterItem(new GPUImageMonochromeFilter(), "Mono", R.drawable.filter_mono));
         filterItems.add(new FilterItem(new GPUImageGaussianBlurFilter(), "Blur", R.drawable.filter_blur));
 
 

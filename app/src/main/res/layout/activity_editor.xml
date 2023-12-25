@@ -39,7 +39,7 @@
         <ImageView
             android:id="@+id/downlaod"
             android:layout_width="45dp"
-            android:layout_marginLeft="130dp"
+            android:layout_marginLeft="110dp"
             android:layout_height="match_parent"
             android:src="@drawable/downlioad" />
 
