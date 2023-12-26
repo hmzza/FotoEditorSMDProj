@@ -275,6 +275,8 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     // Android 10 and above uses scoped storage and no need for WRITE_EXTERNAL_STORAGE permission
                     saveImageToGallery(currentBitmap);
+                    Intent intent = new Intent(Editor.this, FinalActivity.class);
+                    startActivity(intent);
                 } else {
                     // For older versions, check if the WRITE_EXTERNAL_STORAGE permission is granted
                     if (ContextCompat.checkSelfPermission(Editor.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -283,6 +285,8 @@ public class Editor extends AppCompatActivity implements FiltersFragment.Filters
                     } else {
                         // Permission has already been granted, save the image
                         saveImageToGallery(currentBitmap);
+                        Intent intent = new Intent(Editor.this, FinalActivity.class);
+                        startActivity(intent);
                     }
                 }
             }
